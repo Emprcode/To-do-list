@@ -5,17 +5,24 @@ import { Form } from "./components/Form";
 import { Display } from "./components/Display";
 import { useState } from "react";
 
+const hourPerWeek = 7 * 24;
+
 const App = () => {
   const [taskList, setTaskList] = useState([]);
   const [itemToDel, setItemToDel] = useState([]);
 
+  const totalHours = taskList.reduce((subTtl, item) => subTtl + +item.hr, 0);
+
   const addTask = (data) => {
+    if (hourPerWeek < totalHours + +data.hr) {
+      return alert("Boss, you dont have enough time");
+    }
     setTaskList([...taskList, data]);
   };
-  const switchTask = (_id) => {
+  const switchTask = (_id, type) => {
     const tempArg = taskList.map((item) => {
       if (item._id === _id) {
-        item.type = "bad";
+        item.type = type;
       }
       return item;
     });
@@ -30,7 +37,6 @@ const App = () => {
       ? setItemToDel([...itemToDel, value])
       : setItemToDel(itemToDel.filter((item) => item !== value));
   };
-  console.log(itemToDel);
 
   const handleOnDelete = () => {
     if (!window.confirm("Are you sure you want to delete?")) {
@@ -58,7 +64,8 @@ const App = () => {
 
         <div className="row fw-bold">
           <div className="col">
-            The total time allocated = <span id="totalHours">0</span> Hours
+            The total time allocated ={totalHours} <span id="totalHours"></span>{" "}
+            Hours
           </div>
         </div>
         {itemToDel.length > 0 && (

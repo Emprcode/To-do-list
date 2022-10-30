@@ -1,6 +1,7 @@
+import { type } from "@testing-library/user-event/dist/type";
 import React from "react";
 
-export const BadList = ({ badList, handleOnSelect, itemToDel }) => {
+export const BadList = ({ badList, handleOnSelect, itemToDel, switchTask }) => {
   return (
     <>
       <div className="col-md">
@@ -8,9 +9,9 @@ export const BadList = ({ badList, handleOnSelect, itemToDel }) => {
         <hr />
         <table className="table table-striped table-hover">
           <tbody id="bad-task">
-            {badList.map((item, i) => {
+            {badList.map((item) => {
               return (
-                <tr>
+                <tr key={item._id}>
                   <th scope="row">
                     <input
                       type="checkbox"
@@ -22,9 +23,11 @@ export const BadList = ({ badList, handleOnSelect, itemToDel }) => {
                   </th>
                   <td> {item.task}</td>
                   <td> {item.hr}</td>
-                  <td class="text-end">
-                    <button onclick="markAsToDo({i})" class="btn btn-warning">
-                      <i class="fa-solid fa-left-long"></i>{" "}
+                  <td className="text-end">
+                    <button
+                      onClick={() => switchTask(item._id, "entry")}
+                      className="btn btn-warning">
+                      <i className="fa-solid fa-left-long"></i>{" "}
                     </button>
                   </td>
                 </tr>
@@ -33,7 +36,11 @@ export const BadList = ({ badList, handleOnSelect, itemToDel }) => {
           </tbody>
         </table>
         <div className="text-end fw-bold">
-          You could have saved = <span id="totalBadHr">0</span> Hours{" "}
+          You could have saved =
+          <span id="totalBadHr">
+            {badList.reduce((acc, item) => acc + +item.hr, 0)}
+          </span>{" "}
+          Hours{" "}
         </div>
       </div>
     </>
