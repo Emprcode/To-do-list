@@ -45,7 +45,7 @@ export const Form = ({ addTask }) => {
             />
           </div>
           <div className=" col-md-2 d-grid gap-2">
-            <button className="btn btn-primary" type="submit">
+            <button className="btn btn-primary" type="submit" >
               <i className="fa-solid fa-plus"></i>Add New Task
             </button>
           </div>
