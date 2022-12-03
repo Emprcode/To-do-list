@@ -4,13 +4,14 @@ import { Title } from "./components/Title";
 import { Form } from "./components/Form";
 import { Display } from "./components/Display";
 import { useEffect, useState } from "react";
-import { fetchAllTask } from "./helpers.js/axiosHelpers";
+import { fetchAllTask, postTask, updateTask } from "./helpers.js/axiosHelpers";
 
 const hourPerWeek = 7 * 24;
 
 const App = () => {
   const [taskList, setTaskList] = useState([]);
   const [itemToDel, setItemToDel] = useState([]);
+  const [response, setResponse] = useState({});
 
   const totalHours = taskList.reduce((subTtl, item) => subTtl + +item.hr, 0);
 
@@ -20,25 +21,35 @@ const App = () => {
   // call axios to fetch all data
 
   const getTasks = async () => {
-    const data = await fetchAllTask();
-    console.log(data);
+    const { status, tasks } = await fetchAllTask();
+    status === "success" && setTaskList(tasks);
+    // console.log(data);
   };
 
-  const addTask = (data) => {
+  const addTask = async (data) => {
     if (hourPerWeek < totalHours + +data.hr) {
       return alert("Hey, you dont have enough time");
     }
-    setTaskList([...taskList, data]);
-  };
-  const switchTask = (_id, type) => {
-    const tempArg = taskList.map((item) => {
-      if (item._id === _id) {
-        item.type = type;
-      }
-      return item;
-    });
+    // setTaskList([...taskList, data]);
 
-    setTaskList(tempArg);
+    // send data to the api
+
+    const result = await postTask(data);
+    console.log(result);
+    result?.status === "success" && getTasks();
+    setResponse(result);
+  };
+  const switchTask = async (_id, type) => {
+    // const tempArg = taskList.map((item) => {
+    //   if (item._id === _id) {
+    //     item.type = type;
+    //   }
+    //   return item;
+    // });
+    // setTaskList(tempArg);
+    const result = await updateTask({ _id, type });
+    console.log(result);
+    result?.status === "success" && getTasks();
   };
 
   const handleOnSelect = (e) => {
@@ -65,6 +76,16 @@ const App = () => {
     <div className="wrapper">
       <div className="container">
         <Title />
+        {response.message && (
+          <div
+            className={
+              response.status === "success"
+                ? "alert alert-success"
+                : "alert alert-danger"
+            }>
+            {response.message}
+          </div>
+        )}
         <Form addTask={addTask} />
         <Display
           taskList={taskList}

@@ -12,7 +12,31 @@ export const fetchAllTask = async () => {
     console.log(error);
     return {
       status: "error",
-      message: "error.message",
+      message: error.message,
+    };
+  }
+};
+
+export const postTask = async (taskData) => {
+  try {
+    const { data } = await axios.post(taskEp, taskData);
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};
+
+export const updateTask = async (dataObj) => {
+  try {
+    const { data } = await axios.patch(taskEp, dataObj);
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
     };
   }
 };

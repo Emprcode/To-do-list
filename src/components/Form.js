@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { randomString } from "../Utility";
 
 export const Form = ({ addTask }) => {
   const [form, setForm] = useState({ type: "entry" });
@@ -14,9 +13,9 @@ export const Form = ({ addTask }) => {
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    const _id = randomString();
+    // const _id = randomString();
 
-    addTask({ ...form, _id });
+    addTask({ ...form });
   };
 
   return (
