@@ -3,7 +3,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Title } from "./components/Title";
 import { Form } from "./components/Form";
 import { Display } from "./components/Display";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchAllTask } from "./helpers.js/axiosHelpers";
 
 const hourPerWeek = 7 * 24;
 
@@ -13,9 +14,19 @@ const App = () => {
 
   const totalHours = taskList.reduce((subTtl, item) => subTtl + +item.hr, 0);
 
+  useEffect(() => {
+    getTasks();
+  }, []);
+  // call axios to fetch all data
+
+  const getTasks = async () => {
+    const data = await fetchAllTask();
+    console.log(data);
+  };
+
   const addTask = (data) => {
     if (hourPerWeek < totalHours + +data.hr) {
-      return alert("Boss, you dont have enough time");
+      return alert("Hey, you dont have enough time");
     }
     setTaskList([...taskList, data]);
   };
