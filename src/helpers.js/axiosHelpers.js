@@ -32,6 +32,20 @@ export const postTask = async (taskData) => {
 export const updateTask = async (dataObj) => {
   try {
     const { data } = await axios.patch(taskEp, dataObj);
+    // console.log(data);
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};
+
+export const deleteTasks = async (_id) => {
+  try {
+    const { data } = await axios.delete(taskEp, { data: _id });
+    console.log(data);
     return data;
   } catch (error) {
     return {

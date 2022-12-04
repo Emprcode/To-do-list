@@ -4,7 +4,12 @@ import { Title } from "./components/Title";
 import { Form } from "./components/Form";
 import { Display } from "./components/Display";
 import { useEffect, useState } from "react";
-import { fetchAllTask, postTask, updateTask } from "./helpers.js/axiosHelpers";
+import {
+  deleteTasks,
+  fetchAllTask,
+  postTask,
+  updateTask,
+} from "./helpers.js/axiosHelpers";
 
 const hourPerWeek = 7 * 24;
 
@@ -12,6 +17,7 @@ const App = () => {
   const [taskList, setTaskList] = useState([]);
   const [itemToDel, setItemToDel] = useState([]);
   const [response, setResponse] = useState({});
+  const [checkedAll, setCheckedAll] = useState(false);
 
   const totalHours = taskList.reduce((subTtl, item) => subTtl + +item.hr, 0);
 
@@ -54,22 +60,41 @@ const App = () => {
 
   const handleOnSelect = (e) => {
     const { value, checked } = e.target;
-
-    checked
-      ? setItemToDel([...itemToDel, value])
-      : setItemToDel(itemToDel.filter((item) => item !== value));
+    if (checked) {
+      setItemToDel([...itemToDel, value]);
+      setCheckedAll(taskList.length === itemToDel.length + 1);
+    } else {
+      setItemToDel(itemToDel.filter((item) => item !== value));
+      setCheckedAll(false);
+    }
   };
 
-  const handleOnDelete = () => {
+  const handleOnSelectAll = (e) => {
+    const { checked } = e.target;
+
+    if (checked) {
+      setCheckedAll(true);
+      setItemToDel(taskList.map((item) => item._id));
+    } else {
+      setItemToDel([]);
+      setCheckedAll(false);
+    }
+  };
+
+  const handleOnDelete = async (_id) => {
     if (!window.confirm("Are you sure you want to delete?")) {
       return;
     }
-    const filteredArg = taskList.filter(
-      (item) => !itemToDel.includes(item._id)
-    );
-    setTaskList(filteredArg);
+    // const filteredArg = taskList.filter(
+    //   (item) => !itemToDel.includes(item._id)
+    // );
+    // setTaskList(filteredArg);
 
-    setItemToDel([]);
+    // setItemToDel([]);
+    const result = await deleteTasks(itemToDel);
+    console.log(result);
+    setResponse(result);
+    result?.status === "success" && getTasks();
   };
 
   return (
@@ -93,10 +118,21 @@ const App = () => {
           handleOnSelect={handleOnSelect}
           itemToDel={itemToDel}
         />
+        {taskList.length ? (
+          <div>
+            <input
+              type="checkbox"
+              className="form-check-input"
+              onChange={handleOnSelectAll}
+              checked={checkedAll}
+            />
+            <label htmlFor="">Select All The Tasks</label>
+          </div>
+        ) : null}
 
         <div className="row fw-bold">
           <div className="col">
-            The total time allocated ={totalHours} <span id="totalHours"></span>{" "}
+            The total time allocated ={totalHours} <span id="totalHours"></span>
             Hours
           </div>
         </div>
@@ -111,5 +147,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;
