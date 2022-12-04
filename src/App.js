@@ -95,6 +95,7 @@ const App = () => {
     console.log(result);
     setResponse(result);
     result?.status === "success" && getTasks();
+    setItemToDel([]);
   };
 
   return (
