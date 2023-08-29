@@ -19,7 +19,7 @@ const App = () => {
   const [response, setResponse] = useState({});
   const [checkedAll, setCheckedAll] = useState(false);
 
-  const totalHours = taskList.reduce((subTtl, item) => subTtl + +item.hr, 0);
+  const totalHours = taskList?.reduce((subTtl, item) => subTtl + +item.hr, 0) || 0;
 
   useEffect(() => {
     getTasks();
@@ -62,9 +62,9 @@ const App = () => {
     const { value, checked } = e.target;
     if (checked) {
       setItemToDel([...itemToDel, value]);
-      setCheckedAll(taskList.length === itemToDel.length + 1);
+      setCheckedAll(taskList?.length === itemToDel?.length + 1);
     } else {
-      setItemToDel(itemToDel.filter((item) => item !== value));
+      setItemToDel(itemToDel?.filter((item) => item !== value));
       setCheckedAll(false);
     }
   };
@@ -119,7 +119,7 @@ const App = () => {
           handleOnSelect={handleOnSelect}
           itemToDel={itemToDel}
         />
-        {taskList.length ? (
+        {taskList?.length ? (
           <div>
             <input
               type="checkbox"

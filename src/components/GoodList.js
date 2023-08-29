@@ -13,14 +13,14 @@ export const GoodList = ({
         <hr />
         <table className="table table-striped table-hover">
           <tbody id="task-list">
-            {taskList.map((item) => {
+            {taskList?.map((item) => {
               return (
-                <tr key={item._id}>
+                <tr key={item?._id}>
                   <th scope="row">
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      value={item._id}
+                      value={item?._id}
                       onChange={handleOnSelect}
                       checked={itemToDel.includes(item._id)}
                     />

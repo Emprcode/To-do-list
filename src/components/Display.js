@@ -8,8 +8,8 @@ export const Display = ({
   handleOnSelect,
   itemToDel,
 }) => {
-  const entList = taskList.filter((item) => item.type === "entry");
-  const badList = taskList.filter((item) => item.type === "bad");
+  const entList = taskList?.filter((item) => item.type === "entry");
+  const badList = taskList?.filter((item) => item.type === "bad");
 
   return (
     <>
